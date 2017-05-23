@@ -23,6 +23,7 @@ public class SemaforoController implements Runnable {
         while (true) {
         try {
             _arduino.comunicacaoArduino("1");
+            _arduino.ouvirArduino();
             Thread.sleep(5000);
             _arduino.comunicacaoArduino("2");
             Thread.sleep(2000);
@@ -37,6 +38,7 @@ public class SemaforoController implements Runnable {
         } catch (InterruptedException ex) {
             Logger.getLogger(SemaforoController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         }
     }
 

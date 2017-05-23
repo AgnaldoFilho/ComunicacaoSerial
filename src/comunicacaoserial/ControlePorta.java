@@ -2,15 +2,20 @@ package comunicacaoserial;
  
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
+import java.awt.HeadlessException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import javax.swing.JOptionPane;
  
-public class ControlePorta {
+public class ControlePorta{
   private OutputStream serialOut;
-  private int taxa;
-  private String portaCOM;
+  private InputStream serialIn;
+  private final int taxa;
+  private final String portaCOM;
  
   /**
    * Construtor da classe ControlePorta
@@ -41,12 +46,12 @@ public class ControlePorta {
       //Abre a porta COM 
       SerialPort port = (SerialPort) portId.open("Comunicação serial", this.taxa);
       serialOut = port.getOutputStream();
+      serialIn = port.getInputStream();
       port.setSerialPortParams(this.taxa, //taxa de transferência da porta serial 
                                SerialPort.DATABITS_8, //taxa de 10 bits 8 (envio)
                                SerialPort.STOPBITS_1, //taxa de 10 bits 1 (recebimento)
                                SerialPort.PARITY_NONE); //receber e enviar dados
-    }catch (Exception e) {
-      e.printStackTrace();
+    }catch (PortInUseException | UnsupportedCommOperationException | HeadlessException | IOException e) {
     }
 }
  
@@ -56,6 +61,7 @@ public class ControlePorta {
   public void close() {
     try {
         serialOut.close();
+        serialIn.close();
     }catch (IOException e) {
       JOptionPane.showMessageDialog(null, "Não foi possível fechar porta COM.",
                 "Fechar porta COM", JOptionPane.PLAIN_MESSAGE);
@@ -69,8 +75,18 @@ public class ControlePorta {
     try {
       serialOut.write(opcao);//escreve o valor na porta serial para ser enviado
     } catch (IOException ex) {
-        JOptionPane.showMessageDialog(null, "Não foi possível enviar o dado. ",
-                "Enviar dados", JOptionPane.PLAIN_MESSAGE);
+        System.out.println("Não foi possível enviar o dado. ");
     }
-  } 
+  }
+public int receberDados(){
+    try {
+        //if(serialIn.available() == 1){
+            int retorno = serialIn.read();
+            return retorno;
+        //}
+    } catch (IOException e) {
+        System.out.println(e.toString());
+    }
+      return 0;
+}  
 }

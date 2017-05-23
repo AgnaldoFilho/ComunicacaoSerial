@@ -11,4 +11,5 @@ package Interface;
  */
 public interface IArduino {
     void comunicacaoArduino(String comando);
+    int ouvirArduino();
 }
