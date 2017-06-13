@@ -4,35 +4,20 @@ package Model;
 
 import Interface.IArduino;
 import comunicacaoserial.ControlePorta;
-import comunicacaoserial.EscutaSerial;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
  * @author klauder
  */
 public class Arduino implements IArduino {
-  private ControlePorta arduino;
-  private EscutaSerial escuta;
+  private final ControlePorta arduino;
   
-  /**
-   * Construtor da classe Arduino
-     * @param porta
-   */
   public Arduino(String porta){
-        arduino = new ControlePorta("COM4",9600);
-        escuta = new EscutaSerial(porta,9600);
+        arduino = new ControlePorta(porta,9600);
   }   
   @Override
   public int ouvirArduino(){
-      try {
-          return arduino.receberDados();
-      } catch (IOException ex) {
-          Logger.getLogger(Arduino.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      return 0;
+      return arduino.receberDados();
   }
   @Override
   public void comunicacaoArduino(String comando) {        
